@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather</title>
+    <script src="https://kit.fontawesome.com/1ad0f4018e.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<style>
+    body {
+    color: #fff;
+    overflow-x: hidden;
+    height: 80%;
+    background-image: linear-gradient(#81D4FA, #2196F3);
+    background-repeat: no-repeat
+}
+
+.card0 {
+    width: 90%
+}
+
+.card1 {
+    background-image: linear-gradient(#2196F3, #81D4FA);
+    padding: 30px 20px 30px 50px
+}
+
+.image {
+    width: 300px;
+    height: 300px
+}
+
+.large-font {
+    font-size: 70px;
+    font-family: Arial
+}
+
+.fa-sun-o {
+    font-size: 22px
+}
+
+.card2 {
+    background-color: #607D8B;
+    padding: 0px 0px 40px 40px
+}
+
+input {
+    background-color: #607D8B;
+    padding: 24px 0px 12px 0px !important;
+    width: 80%;
+    box-sizing: border-box;
+    border: none !important;
+    border-bottom: 1px solid #CFD8DC !important;
+    font-size: 16px !important;
+    color: #fff !important
+}
+
+input:focus {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    border-bottom: 1px solid #fff !important;
+    outline-width: 0;
+    font-weight: 400
+}
+
+::placeholder {
+    color: #B0BEC5 !important;
+    opacity: 1
+}
+
+:-ms-input-placeholder {
+    color: #B0BEC5 !important
+}
+
+::-ms-input-placeholder {
+    color: #B0BEC5 !important
+}
+
+.fa-search {
+    color: #607D8B;
+    background-color: #E1F5FE;
+    font-size: 20px;
+    padding: 20px;
+    width: 20%;
+    cursor: pointer
+}
+
+.light-text {
+    color: #B0BEC5
+}
+
+.suggestion:hover {
+    color: #fff;
+    cursor: pointer
+}
+
+.line {
+    height: 1px;
+    background-color: #B0BEC5
+}
+</style>
+
+
+<body>
+    <div class="container-fluid px-1 px-sm-3 py-5 mx-auto">
+        <div class="row d-flex justify-content-center">
+            <div class="row card0">
+                <div class="card1 col-lg-8 col-md-7">
+                    <h1>WEATHER</h1>
+                    <div class="text-center"> <img class="image mt-5" src="./images/weather.png"> </div>
+                    <div class="row px-3 mt-3 mb-3">
+                        <h1 class="large-font mr-3" id="temp" ></h1>
+                        <h5 id="feelsLike"></h5>
+                        <div class="d-flex flex-column mr-3">
+                            <h2 class="mt-3 mb-0" id="location"></h2> <small id="date"></small>
+                        </div>
+                        <div class="d-flex flex-column text-center">
+                            <h3 class="fa fa-sun-o mt-4"></h3> <small id="condition" ></small>
+                        </div>
+                    </div>
+                </div>
+                <div class="card2 col-lg-4 col-md-5" id="data">
+                    <div class="row px-3"> <input type="text" id="placeName" name="location" placeholder="Enter Location" class="mb-5">
+                        <div >
+                            <button class="fa fa-search mb-5 mr-0 text-center " onclick="fetchData()"></button>
+                        </div>
+                    </div>
+                    <div class="mr-5">
+                        <div class="line my-5"></div>
+                        <p>Weather Details</p>
+                        <div class="row px-3">
+                            <p class="light-text">country</p>
+                            <p class="ml-auto" id="country"></p>
+                        </div>
+                        <div class="row px-3">
+                            <p class="light-text">humidity</p>
+                            <p class="ml-auto" id="humidity" ></p>
+                        </div>
+                        <div class="row px-3">
+                            <p class="light-text">wind</p>
+                            <p class="ml-auto" id="wind" ></p>
+                        </div>
+                        <div class="row px-3">
+                            <p class="light-text">pressure</p>
+                            <p class="ml-auto" id="pressure" ></p>
+                        </div>
+                        <div class="line mt-3"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+<script>
+    function fetchData(){
+    console.log("weather");
+    let place=placeName.value
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${place}&appid=6fa99e1f96f024f79970c5a3532b2ac6&units=metric`)
+    .then(res=>{
+        if(res.ok){
+            return res.json()
+        }else
+        {
+            throw alert(" Please enter Valid Location")
+        }
+    })
+    .then(data=>displayValues(data)).catch(err=>console.log(err.message))
+
+    
+}
+function displayValues(data){
+    // console.log(data);
+    let location=data.name
+    let temp=data.main.temp+"\u00B0"
+    let main=data.weather[0].main
+    let humidity=data.main.humidity+"%"
+    let wind=data.wind.speed+"kmph"
+    let pressure=data.main.pressure
+    var date= new Date()
+    let country= data.sys.country
+    let feel=data.main.feels_like+"\u00B0"
+    console.log(country);
+
+   document.getElementById("temp").innerHTML=temp
+   document.getElementById("date").innerHTML=date
+   document.getElementById("location").innerHTML=location
+   document.getElementById("condition").innerHTML=main
+   document.getElementById("country").innerHTML=country
+   document.getElementById("humidity").innerHTML=humidity
+   document.getElementById("wind").innerHTML=wind
+   document.getElementById("pressure").innerHTML=pressure
+   document.getElementById("feelsLike").innerHTML="feels like "+feel
+
+
+
+
+}
+</script>
+</html>
